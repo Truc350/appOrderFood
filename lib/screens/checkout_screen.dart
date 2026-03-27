@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'orders_page.dart';
+import '../models/cart_manager.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -11,28 +12,20 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String selectedPayment = 'Tiền mặt';
 
-  final List<Map<String, dynamic>> orderItems = [
-    {
-      'name': '1 x Bún bò truyền thống',
-      'sub': 'Size L, ít cay',
-      'price': 90000,
-      'icon': Icons.ramen_dining,
-    },
-    {
-      'name': '1 x Coca',
-      'sub': 'Lon 330ml',
-      'price': 10000,
-      'icon': Icons.local_drink,
-    },
-  ];
+  List<CartItem> get orderItems => CartManager.instance.items.where((i) => i.isChecked).toList();
 
-  int get subtotal => orderItems.fold(0, (sum, item) => sum + (item['price'] as int));
+  int get subtotal => CartManager.instance.selectedTotalPrice;
   int get shippingFee => 15000;
   int get discount => 0;
   int get total => subtotal + shippingFee - discount;
 
   String formatPrice(int price) {
-    return '${price ~/ 1000}.000đ';
+    if (price == 0) return '0 đ';
+    final formatted = price.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (m) => '${m[1]}.',
+    );
+    return '${formatted} đ';
   }
 
   @override
@@ -78,7 +71,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   // Delivery info section
                   _sectionLabel('Thông tin giao hàng'),
                   const SizedBox(height: 8),
-
 
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -129,13 +121,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ],
                     ),
                   ),
+                  
+                  const SizedBox(height: 16),
                   _sectionLabel('Đơn hàng của bạn'),
                   const SizedBox(height: 6),
-
-                  // Address card
-
-
-                  const SizedBox(height: 10),
 
                   // Order items
                   Container(
@@ -151,14 +140,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               padding: const EdgeInsets.all(14),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.circular(8),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      item.imageUrl,
+                                      width: 44,
+                                      height: 44,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        width: 44,
+                                        height: 44,
+                                        color: Colors.grey[100],
+                                        child: Icon(Icons.fastfood, size: 24, color: Colors.grey[500]),
+                                      ),
                                     ),
-                                    child: Icon(item['icon'] as IconData, size: 24, color: Colors.grey[500]),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
@@ -166,19 +161,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          item['name'] as String,
+                                          '${item.quantity}x ${item.name}',
                                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                         ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          item['sub'] as String,
-                                          style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                                        ),
+                                        if (item.optionsLabel.isNotEmpty) ...[
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            item.optionsLabel,
+                                            style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    formatPrice(item['price'] as int),
+                                    formatPrice(item.totalPrice),
                                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                   ),
                                 ],
@@ -306,6 +304,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
+                      if (orderItems.isEmpty) return;
+                      CartManager.instance.removeSelected();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Đặt hàng thành công!')),
+                      );
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (_) => const OrdersPage()),

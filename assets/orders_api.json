@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ORD001",
+    "status": "delivering",
+    "items": [
+      {
+        "name": "Burger Bò Wagyu Truffle",
+        "quantity": 1,
+        "price": 245000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuBKslNrZa8ghocespk8mCk-ZQGobWm63eswxGE72mdUOS_k3RvFYgTrrujER-96BFdmqrIohJ_S304c_GV7dM-ze_bQcw1pfYT1FBUOK-Mi18wanjahbd2sgfvwETEEsPcCGWG7uMwQ4KNp2H1z2uZcBSNMgTo7iJ_yj8a3M4jtsREyEBoivKc1NfDCkY5oKfRAv-dbap-2_3ZiTeL_SgoIBh4004IE0p7zK9t8f_zRzszlz285IL68f3LAo236u-7B6JvBHmGe0PI"
+      },
+      {
+        "name": "Khoai tây chiên Parmesan",
+        "quantity": 2,
+        "price": 130000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAwT_AQ0cbvZPcCB-5mG3EyseLzN7bpjLWhTlnOLskTiYPQXs9yC_k0DT66vHfXG5g7C5jtVBMzE7CXGpJLs9Pa5DFtvYNai5yW6djnEK7nJbzeUkdAeDtwgfzFfWL9E7uJ5tKzUAYYWl5Zc4vRLcMa6WXTk5h75ZYL7coYcWh_OQ6UXPb9GOPwHVFzmEcWyDK7CY63kLkZKdUyyyuEXNRXl60zkmHXaohWlAq4_nkCF9csJQAwuY6wlrRFBsJV2H5tD_DWYzPs6SI"
+      },
+      {
+        "name": "Salad Caesar Tôm Nướng",
+        "quantity": 1,
+        "price": 155000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAwT_AQ0cbvZPcCB-5mG3EyseLzN7bpjLWhTlnOLskTiYPQXs9yC_k0DT66vHfXG5g7C5jtVBMzE7CXGpJLs9Pa5DFtvYNai5yW6djnEK7nJbzeUkdAeDtwgfzFfWL9E7uJ5tKzUAYYWl5Zc4vRLcMa6WXTk5h75ZYL7coYcWh_OQ6UXPb9GOPwHVFzmEcWyDK7CY63kLkZKdUyyyuEXNRXl60zkmHXaohWlAq4_nkCF9csJQAwuY6wlrRFBsJV2H5tD_DWYzPs6SI"
+      },
+      {
+        "name": "Trà Sữa Trân Châu Oolong",
+        "quantity": 2,
+        "price": 55000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuDt3e8nUCIquisAWW66vb2P4gylNpIw_4nA4Fa8tv62jv-UcheJlyRL9I8PjexzGqfjH2-ajQsgOKuV-al6RjmwPFci12RVeBS-cfFZX8O11vnNVlgECRRU0_VIS_GPewDHqZL2Or8pzs2Nq9PjL_KLNrnXJL5Bu8SjoKd5Ys5uhS0Adrt1y97HyTJFCpw5SM8q8ifqjHDIZbeTs2-329zcmyivqLxF3PHYV6cnyRF5HCUgJt32B7Mn-d6zWFmtTBg0QVjhnVDMS9k"
+      },
+      {
+        "name": "Bánh Mì Garlic Cheese",
+        "quantity": 1,
+        "price": 65000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuCnvcRaNUqbcZ4EvVnUvpDv_VaRePeewsLJQHiVuUYC-m4t9pjFZIsOKXOWeoUJve29pFtbsgz0aEO-wzfMxA2FL5FKCSFEOWu9OQlVkMeURMfP9SDBf1eeDPIlsYLREzqk9_QlWerd0LMgtaEBGw9KvYVoB0iW0JvrvwcfQZT5fmfElbrnEcyBEgZwYCATQ5joOTjwheem1I0xndX4vT2oBcTiAso2omLEtf98YFTcEQvl5x_t98iAfl6Nms4oRVuJUN9Iypjrvug"
+      }
+    ],
+    "totalPrice": 705000
+  },
+  {
+    "id": "ORD002",
+    "status": "delivered",
+    "items": [
+      {
+        "name": "Pizza Quattro Formaggi",
+        "quantity": 1,
+        "price": 185000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuCnvcRaNUqbcZ4EvVnUvpDv_VaRePeewsLJQHiVuUYC-m4t9pjFZIsOKXOWeoUJve29pFtbsgz0aEO-wzfMxA2FL5FKCSFEOWu9OQlVkMeURMfP9SDBf1eeDPIlsYLREzqk9_QlWerd0LMgtaEBGw9KvYVoB0iW0JvrvwcfQZT5fmfElbrnEcyBEgZwYCATQ5joOTjwheem1I0xndX4vT2oBcTiAso2omLEtf98YFTcEQvl5x_t98iAfl6Nms4oRVuJUN9Iypjrvug"
+      },
+      {
+        "name": "Coke Zero",
+        "quantity": 1,
+        "price": 25000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuBC-y082_Zt-nO3vO53Lp0011G_R8z-06R_9yA4C-wB-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B-4B"
+      }
+    ],
+    "totalPrice": 210000
+  },
+  {
+    "id": "ORD003",
+    "status": "cancelled",
+    "items": [
+      {
+        "name": "Green Poke Bowl Artisan",
+        "quantity": 1,
+        "price": 165000,
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAwT_AQ0cbvZPcCB-5mG3EyseLzN7bpjLWhTlnOLskTiYPQXs9yC_k0DT66vHfXG5g7C5jtVBMzE7CXGpJLs9Pa5DFtvYNai5yW6djnEK7nJbzeUkdAeDtwgfzFfWL9E7uJ5tKzUAYYWl5Zc4vRLcMa6WXTk5h75ZYL7coYcWh_OQ6UXPb9GOPwHVFzmEcWyDK7CY63kLkZKdUyyyuEXNRXl60zkmHXaohWlAq4_nkCF9csJQAwuY6wlrRFBsJV2H5tD_DWYzPs6SI"
+      }
+    ],
+    "totalPrice": 165000,
+    "cancelReason": "Nhà hàng quá bận"
+  }
+]

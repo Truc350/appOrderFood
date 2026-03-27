@@ -5,9 +5,23 @@ import 'home_screen.dart';
 import 'MessageScreen.dart';
 import 'NotificationScreen.dart';
 import 'orders_page.dart';
+import '../models/cart_manager.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen({super.key});
+  final String id;
+  final String name;
+  final String description;
+  final int price;
+  final String imageUrl;
+
+  const ProductDetailScreen({
+    super.key,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
+  });
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -32,7 +46,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   };
 
   int get totalPrice {
-    int total = 90000 * mainQuantity;
+    int total = widget.price * mainQuantity;
     selectedAddons.forEach((name, selected) {
       if (selected) {
         total += (addonPrices[name] ?? 0) * (addonQuantities[name] ?? 1);
@@ -42,7 +56,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   String get orderSummary {
-    List<String> parts = ['$mainQuantity bún bò truyền thống'];
+    List<String> parts = ['$mainQuantity ${widget.name.toLowerCase()}'];
     selectedAddons.forEach((name, selected) {
       if (selected) {
         final qty = addonQuantities[name] ?? 1;
@@ -53,8 +67,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   String formatPrice(int price) {
-    return '${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}.000 đ'
-        .replaceAll('.000.000', '.000');
+    return '${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} đ';
   }
 
   @override
@@ -79,7 +92,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           width: double.infinity,
                           height: 280,
                           child: Image.network(
-                            'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800',
+                            widget.imageUrl,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
                               color: Colors.orange[100],
@@ -126,10 +139,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                'Bún bò truyền thống',
-                                style: TextStyle(
+                                widget.name,
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
@@ -150,9 +163,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         // Price + sold count
                         Row(
                           children: [
-                            const Text(
-                              '90.000 đ',
-                              style: TextStyle(
+                            Text(
+                              formatPrice(widget.price),
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFFE84B3A),
@@ -200,7 +213,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                         // Ingredients
                         Text(
-                          'Thành phần: Bún + nước dùng + giò + 100g thịt bò + rau thơm',
+                          widget.description,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[600],
@@ -280,7 +293,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       Text(
-                        _formatTotalPrice(totalPrice),
+                        formatPrice(totalPrice),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -297,7 +310,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          CartManager.instance.addItem(CartItem(
+                            id: widget.id,
+                            name: widget.name,
+                            price: totalPrice,
+                            quantity: 1,
+                            imageUrl: widget.imageUrl,
+                            optionsLabel: orderSummary,
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Đã thêm món vào giỏ hàng!'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
@@ -320,6 +348,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          CartManager.instance.addItem(CartItem(
+                            id: widget.id,
+                            name: widget.name,
+                            price: totalPrice,
+                            quantity: 1,
+                            imageUrl: widget.imageUrl,
+                            optionsLabel: orderSummary,
+                          ));
                           Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckoutScreen()));
                         },
                         child: Container(
@@ -505,12 +541,5 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ],
       ),
     );
-  }
-
-
-
-  String _formatTotalPrice(int price) {
-    final thousands = price ~/ 1000;
-    return '$thousands.000 đ';
   }
 }

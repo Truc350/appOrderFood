@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'order_detail_page.dart';
@@ -161,7 +163,7 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
-  int _selectedStatusIndex = 0;
+  int _selectedStatusIndex = 2; // Default to 'Đang giao'
   int _selectedNavIndex = 1;
 
   final List<String> _statusLabels = [
@@ -171,6 +173,74 @@ class _OrdersPageState extends State<OrdersPage> {
     'Đã giao',
     'Đã hủy',
   ];
+
+  List<Order> _allOrders = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrders();
+  }
+
+  Future<void> _loadOrders() async {
+    try {
+      final String response = await rootBundle.loadString('assets/orders_api.json');
+      final List<dynamic> data = jsonDecode(response);
+      
+      final parsedOrders = data.map((json) {
+        final itemsList = (json['items'] as List).map((i) => OrderItem(
+          name: i['name'],
+          quantity: i['quantity'],
+          price: i['price'],
+          imageUrl: i['imageUrl'],
+        )).toList();
+
+        OrderStatus status;
+        switch(json['status']) {
+          case 'pending': status = OrderStatus.pending; break;
+          case 'waitingPickup': status = OrderStatus.waitingPickup; break;
+          case 'delivering': status = OrderStatus.delivering; break;
+          case 'delivered': status = OrderStatus.delivered; break;
+          case 'cancelled': status = OrderStatus.cancelled; break;
+          default: status = OrderStatus.pending;
+        }
+
+        return Order(
+          id: json['id'],
+          status: status,
+          items: itemsList,
+          totalPrice: json['totalPrice'],
+          cancelReason: json['cancelReason'],
+        );
+      }).toList();
+
+      if (mounted) {
+        setState(() {
+          _allOrders = parsedOrders;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading orders JSON: $e');
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+  List<Order> get filteredOrders {
+    OrderStatus targetStatus;
+    switch (_selectedStatusIndex) {
+      case 0: targetStatus = OrderStatus.pending; break;
+      case 1: targetStatus = OrderStatus.waitingPickup; break;
+      case 2: targetStatus = OrderStatus.delivering; break;
+      case 3: targetStatus = OrderStatus.delivered; break;
+      case 4: targetStatus = OrderStatus.cancelled; break;
+      default: targetStatus = OrderStatus.pending;
+    }
+    return _allOrders.where((o) => o.status == targetStatus).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,15 +298,43 @@ class _OrdersPageState extends State<OrdersPage> {
           // Order cards
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                ActiveOrderCard(order: mockOrders[0]),
-                const SizedBox(height: 24),
-                CompletedOrderCard(order: mockOrders[1]),
-                const SizedBox(height: 24),
-                CancelledOrderCard(order: mockOrders[2]),
-              ]),
-            ),
+            sliver: isLoading 
+              ? const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(color: AppColors.primary)))
+              : filteredOrders.isEmpty
+                  ? const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 40),
+                        child: Center(
+                          child: Text(
+                            'Không có đơn hàng nào',
+                            style: TextStyle(color: AppColors.secondary, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final order = filteredOrders[index];
+                          Widget card;
+                          if (order.status == OrderStatus.delivering) {
+                            card = ActiveOrderCard(order: order);
+                          } else if (order.status == OrderStatus.delivered) {
+                            card = CompletedOrderCard(order: order);
+                          } else if (order.status == OrderStatus.cancelled) {
+                            card = CancelledOrderCard(order: order);
+                          } else {
+                            card = ActiveOrderCard(order: order);
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 24),
+                            child: card,
+                          );
+                        },
+                        childCount: filteredOrders.length,
+                      ),
+                    ),
           ),
         ],
       ),
@@ -925,7 +1023,7 @@ class _OrderItemRow extends StatelessWidget {
 String _formatCurrency(int amount) {
   final formatted = amount.toString().replaceAllMapped(
     RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-    (m) => '\${m[1]}.',
+    (m) => '${m[1]}.',
   );
-  return '\${formatted}đ';
+  return '${formatted}đ';
 }
