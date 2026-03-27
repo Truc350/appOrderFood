@@ -122,16 +122,20 @@ class _CartScreenState extends State<CartScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFB4B4).withOpacity(0.1),
+                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFFD35400),
+                color: Colors.black87,
                 size: 20,
               ),
             ),
@@ -158,10 +162,10 @@ class _CartScreenState extends State<CartScreen> {
         children: [
           Row(
             children: [
-              Checkbox(
+               Checkbox(
                 value: _isAllChecked,
                 onChanged: _toggleAll,
-                activeColor: const Color(0xFFD35400),
+                activeColor: const Color(0xFFD81F19), // Theme red
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -209,7 +213,7 @@ class _CartScreenState extends State<CartScreen> {
           Checkbox(
             value: item['checked'],
             onChanged: (val) => _toggleItem(index, val),
-            activeColor: const Color(0xFFD35400),
+            activeColor: const Color(0xFFD81F19), // Theme red
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
@@ -221,6 +225,14 @@ class _CartScreenState extends State<CartScreen> {
               width: 65,
               height: 65,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 65,
+                  height: 65,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.fastfood, color: Colors.grey),
+                );
+              },
             ),
           ),
           const SizedBox(width: 10),
@@ -241,7 +253,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFFD35400),
+                    color: Color(0xFFD81F19), // Theme red
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -268,7 +280,7 @@ class _CartScreenState extends State<CartScreen> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       onPressed: () => _removeItem(index),
-                      icon: const Icon(Icons.delete_outline, color: Color(0xFFD35400), size: 22),
+                      icon: const Icon(Icons.delete_outline, color: Color(0xFFD81F19), size: 22), // Theme red
                     ),
                   ],
                 ),
@@ -286,12 +298,12 @@ class _CartScreenState extends State<CartScreen> {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: isAdd ? const Color(0xFFD35400) : const Color(0xFFFFB4B4).withOpacity(0.1),
+          color: isAdd ? const Color(0xFFD81F19) : Colors.grey[200], // Theme red for add, grey for minus
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           icon,
-          color: isAdd ? Colors.white : const Color(0xFFD35400),
+          color: isAdd ? Colors.white : Colors.black87,
           size: 16,
         ),
       ),
@@ -302,7 +314,7 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.all(25),
       decoration: const BoxDecoration(
-        color: Color(0xFFD35400),
+        color: Color(0xFFD81F19), // Theme red
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(40),
           topRight: Radius.circular(40),
@@ -314,7 +326,7 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+               const Text(
                 'Tổng cộng',
                 style: TextStyle(
                   fontSize: 22,
@@ -339,7 +351,7 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFFD35400),
+                foregroundColor: const Color(0xFFD81F19), // Theme red
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
