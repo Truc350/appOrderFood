@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'category_detail_screen.dart';
 
 
 class FoodCategory {
@@ -174,11 +175,18 @@ class _CategoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        // TODO: Navigate to category detail page
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Xem danh mục: ${category.name}'),
-            duration: const Duration(seconds: 1),
+        
+        String id = 'pho';
+        if (category.name.toLowerCase().contains('cơm')) id = 'com';
+        else if (category.name.toLowerCase().contains('hủ tiếu')) id = 'hutieu';
+        
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CategoryDetailScreen(
+              categoryId: id,
+              categoryName: category.name,
+            ),
           ),
         );
       },

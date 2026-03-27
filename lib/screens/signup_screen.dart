@@ -89,6 +89,25 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => const LoginScreen(),
+                          transitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Đăng nhập',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
                   Column(
                     children: [
                       const Text(
@@ -101,7 +120,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       const SizedBox(height: 6),
                       Container(
-                        width: 90,
+                        width: 120,
                         height: 3,
                         decoration: BoxDecoration(
                           color: primaryColor,
@@ -109,22 +128,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ],
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    },
-                    child: const Text(
-                      'Đăng nhập',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
                   ),
                 ],
               ),
