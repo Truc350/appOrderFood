@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'cart_screen.dart';
 import 'checkout_screen.dart';
 import 'home_screen.dart';
+import 'MessageScreen.dart';
+import 'NotificationScreen.dart';
 import 'orders_page.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -362,6 +365,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
                 } else if (index == 1) {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+                } else if (index == 2) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+                } else if (index == 3) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
                 }
               },
               type: BottomNavigationBarType.fixed,

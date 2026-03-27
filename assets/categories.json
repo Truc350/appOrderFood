@@ -138,5 +138,83 @@
         ]
       }
     ]
+  },
+  {
+    "id": "bunbo",
+    "name": "Bún Bò",
+    "imageUrl": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=800",
+    "subcategories": [
+      {
+        "name": "Bún Bò Huế",
+        "items": [
+          {
+            "id": "b1",
+            "name": "Bún bò giò heo",
+            "description": "Bún bò Huế cay nồng với giò heo hầm mềm.",
+            "price": 60000,
+            "imageUrl": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=800"
+          },
+          {
+            "id": "b2",
+            "name": "Bún bò đặc biệt",
+            "description": "Đầy đủ chả cua, chả lụa, thịt nạm và gân bò dai giòn.",
+            "price": 75000,
+            "imageUrl": "https://images.unsplash.com/photo-1555126634-323283e090fa?w=800"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mi",
+    "name": "Mì",
+    "imageUrl": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800",
+    "subcategories": [
+      {
+        "name": "Mì Xào",
+        "items": [
+          {
+            "id": "m1",
+            "name": "Mì xào hải sản",
+            "description": "Mì trứng xào tôm mực tươi với rau cải giòn rụm.",
+            "price": 65000,
+            "imageUrl": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800"
+          },
+          {
+            "id": "m2",
+            "name": "Mì xào giòn bò",
+            "description": "Mì chiên giòn rụm phủ sốt thịt bò chua ngọt đậm vị.",
+            "price": 70000,
+            "imageUrl": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "nui",
+    "name": "Nui",
+    "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800",
+    "subcategories": [
+      {
+        "name": "Nui Xào",
+        "items": [
+          {
+            "id": "n1",
+            "name": "Nui xào bò sốt tiêu đen",
+            "description": "Nui ống dai ngon xào thịt bò đẫm xốt tiêu đen.",
+            "price": 55000,
+            "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800"
+          },
+          {
+            "id": "n2",
+            "name": "Nui chiên trứng xúc xích",
+            "description": "Nui chiên giòn tan ngập trong trứng và xúc xích xông khói.",
+            "price": 40000,
+            "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800"
+          }
+        ]
+      }
+    ]
   }
 ]

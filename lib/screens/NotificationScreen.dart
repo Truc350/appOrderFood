@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'orders_page.dart';
+import 'MessageScreen.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -8,7 +11,7 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF6F6),
 
-      bottomNavigationBar: _buildBottomNav(),
+      bottomNavigationBar: _buildBottomNav(context),
 
       body: SafeArea(
         child: Column(
@@ -199,37 +202,55 @@ class NotificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNav() {
+  Widget _buildBottomNav(BuildContext context) {
     return Container(
-      height: 80,
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _navItem(Icons.home_outlined, "TRANG\nCHỦ", false),
-          _navItem(Icons.receipt_long, "ĐƠN\nHÀNG", false),
-          _navItem(Icons.notifications, "THÔNG\nBÁO", true),
-          _navItem(Icons.chat_bubble_outline, "TIN\nNHẮN", false),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, -2)),
         ],
       ),
-    );
-  }
-
-  Widget _navItem(IconData icon, String text, bool active) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: active ? Colors.red : Colors.grey),
-        const SizedBox(height: 4),
-        Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: active ? Colors.red : Colors.grey,
-            fontSize: 11,
+      child: BottomNavigationBar(
+        currentIndex: 2,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+          } else if (index == 1) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+          } else if (index == 3) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
+          }
+        },
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFFE53935),
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        selectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontSize: 11),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
           ),
-        )
-      ],
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_outlined),
+            activeIcon: Icon(Icons.receipt_long),
+            label: 'Đơn hàng',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_outlined),
+            activeIcon: Icon(Icons.notifications),
+            label: 'Thông báo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_outline),
+            activeIcon: Icon(Icons.chat_bubble),
+            label: 'Tin nhắn',
+          ),
+        ],
+      ),
     );
   }
 }
