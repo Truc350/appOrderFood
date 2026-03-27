@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'product_detail_screen.dart';
+import 'orders_page.dart';
+import 'cart_screen.dart';
+import 'profile_screen.dart';
+import 'search_screen.dart';
 
 void main() {
   runApp(const NguyenFoodApp());
@@ -198,7 +203,9 @@ class _HomePageState extends State<HomePage> {
             ),
             child: IconButton(
               icon: const Icon(Icons.shopping_cart_outlined, size: 20),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen()));
+              },
               padding: const EdgeInsets.all(6),
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
             ),
@@ -211,7 +218,9 @@ class _HomePageState extends State<HomePage> {
             ),
             child: IconButton(
               icon: const Icon(Icons.person_outline, size: 20),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+              },
               padding: const EdgeInsets.all(6),
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
             ),
@@ -238,6 +247,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         child: TextField(
+          readOnly: true,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
+          },
           decoration: InputDecoration(
             hintText: 'Tìm kiếm món ăn mà bạn thích...',
             hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
@@ -380,7 +393,13 @@ class _HomePageState extends State<HomePage> {
       ),
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+          } else {
+            setState(() => _selectedIndex = index);
+          }
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFFE53935),
         unselectedItemColor: Colors.grey,
@@ -426,8 +445,15 @@ class _SuggestedItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 150,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProductDetailScreen()),
+        );
+      },
+      child: Container(
+        width: 150,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -515,7 +541,7 @@ class _SuggestedItemCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -530,8 +556,15 @@ class _PopularItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProductDetailScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -598,6 +631,6 @@ class _PopularItemCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }

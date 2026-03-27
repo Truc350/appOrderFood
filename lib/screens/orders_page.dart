@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'order_detail_page.dart';
 import 'order_tracking_page.dart';
+import 'home_screen.dart';
+import 'profile_screen.dart';
+import 'cart_screen.dart';
+import 'order_tracking_page.dart';
+import 'home_screen.dart';
 
 // ─── Color Tokens ────────────────────────────────────────────────────────────
 
@@ -233,42 +238,60 @@ class _OrdersPageState extends State<OrdersPage> {
         ],
       ),
       bottomNavigationBar: _buildBottomNav(),
-      extendBody: true, // Allows content behind bottom nav if needed
     );
   }
 
   Widget _buildAppBar() {
     return SliverAppBar(
       pinned: true,
-      backgroundColor: Colors.white.withOpacity(0.8),
+      backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.menu, color: Color(0xFFB91C1C)),
+        icon: const Icon(Icons.menu, size: 26, color: Colors.black87),
         onPressed: () {},
       ),
-      title: ShaderMask(
-        shaderCallback: (bounds) => const LinearGradient(
-          colors: [Color(0xFFB91C1C), Color(0xFFF97316)], // red-700 to orange-500
-        ).createShader(bounds),
-        child: const Text(
-          'NguyenFood',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-          ),
+      title: const Text(
+        'NguyenFood',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
         ),
       ),
       centerTitle: true,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.shopping_cart_outlined, color: Color(0xFFB91C1C)),
-          onPressed: () {},
+        // Cart button
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.black26),
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.black87),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen()));
+            },
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+          ),
         ),
-        IconButton(
-          icon: const Icon(Icons.account_circle_outlined, color: Color(0xFFB91C1C)),
-          onPressed: () {},
+        // Profile button
+        Container(
+          margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8, left: 4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.black26),
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.person_outline, size: 20, color: Colors.black87),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+            },
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+          ),
         ),
       ],
     );
@@ -277,91 +300,53 @@ class _OrdersPageState extends State<OrdersPage> {
   Widget _buildBottomNav() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF4D2126).withOpacity(0.06),
-            blurRadius: 30,
-            offset: const Offset(0, -8),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Trang chủ', 0),
-              _buildNavItem(Icons.receipt_long, 'Đơn hàng', 1),
-              _buildNavItem(Icons.notifications, 'Thông báo', 2),
-              _buildNavItem(Icons.chat_bubble, 'Tin nhắn', 3),
-            ],
+      child: BottomNavigationBar(
+        currentIndex: _selectedNavIndex,
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+          } else {
+            setState(() => _selectedNavIndex = index);
+          }
+        },
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFFE53935),
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        selectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontSize: 11),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, int index) {
-    final isActive = index == _selectedNavIndex;
-    if (isActive) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFDC2626), Color(0xFFF97316)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_outlined),
+            activeIcon: Icon(Icons.receipt_long),
+            label: 'Đơn hàng',
           ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFDC2626).withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.white),
-            const SizedBox(height: 4),
-            Text(
-              label.toUpperCase(),
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return InkWell(
-      onTap: () => setState(() => _selectedNavIndex = index),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: const Color(0xFF881337).withOpacity(0.4)), // rose-900/40
-            const SizedBox(height: 4),
-            Text(
-              label.toUpperCase(),
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF881337).withOpacity(0.4), // rose-900/40
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_outlined),
+            activeIcon: Icon(Icons.notifications),
+            label: 'Thông báo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_outline),
+            activeIcon: Icon(Icons.chat_bubble),
+            label: 'Tin nhắn',
+          ),
+        ],
       ),
     );
   }
