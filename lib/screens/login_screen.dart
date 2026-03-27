@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFFF0000); // Red
+    const primaryColor = Color(0xFFFF0000);
     const lightPink = Color(0xFFFFD6D6); // Header background
     const inputBorderColor = Color(0xFFF0F0F0); // Very light grey
 
