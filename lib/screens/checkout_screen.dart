@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'orders_page.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -304,7 +305,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const OrdersPage()),
+                      );
+                    },
                     child: Container(
                       height: 52,
                       decoration: BoxDecoration(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'orders_page.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +19,49 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+      );
+      return;
+    }
+
+    try {
+      final String response = await rootBundle.loadString('assets/users.json');
+      final List<dynamic> data = jsonDecode(response);
+
+      bool isMatch = false;
+      for (var user in data) {
+        if (user['email'] == email && user['password'] == password) {
+          isMatch = true;
+          break;
+        }
+      }
+
+      if (isMatch) {
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email hoặc mật khẩu không đúng')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lỗi hệ thống khi đăng nhập')),
+      );
+    }
   }
 
   @override
@@ -222,12 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const OrdersPage()),
-                      );
-                    },
+                    onPressed: _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
@@ -264,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const OrdersPage()),
+                        MaterialPageRoute(builder: (_) => const HomePage()),
                       );
                     },
                     icon: Image.network(

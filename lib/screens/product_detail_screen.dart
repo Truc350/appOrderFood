@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'checkout_screen.dart';
+import 'home_screen.dart';
+import 'orders_page.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({super.key});
@@ -313,7 +316,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const CheckoutScreen()));
+                        },
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
@@ -340,19 +345,53 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           // Bottom nav bar
           Container(
-            height: 60 + MediaQuery.of(context).padding.bottom,
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey[200]!)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                ),
+              ],
             ),
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(Icons.home, 'Home', true),
-                _buildNavItem(Icons.receipt_long_outlined, 'Đơn hàng', false),
-                _buildNavItem(Icons.notifications_outlined, 'Thông báo', false),
-                _buildNavItem(Icons.chat_bubble_outline, 'Tin nhắn', false),
+            child: BottomNavigationBar(
+              currentIndex: 0,
+              onTap: (index) {
+                if (index == 0) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+                } else if (index == 1) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+                }
+              },
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: const Color(0xFFE53935),
+              unselectedItemColor: Colors.grey,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              selectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+              unselectedLabelStyle: const TextStyle(fontSize: 11),
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  activeIcon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.receipt_long_outlined),
+                  activeIcon: Icon(Icons.receipt_long),
+                  label: 'Đơn hàng',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications_outlined),
+                  activeIcon: Icon(Icons.notifications),
+                  label: 'Thông báo',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat_bubble_outline),
+                  activeIcon: Icon(Icons.chat_bubble),
+                  label: 'Tin nhắn',
+                ),
               ],
             ),
           ),
@@ -461,26 +500,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 24,
-          color: isActive ? const Color(0xFFE84B3A) : Colors.grey[500],
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: isActive ? const Color(0xFFE84B3A) : Colors.grey[500],
-          ),
-        ),
-      ],
-    );
-  }
+
 
   String _formatTotalPrice(int price) {
     final thousands = price ~/ 1000;

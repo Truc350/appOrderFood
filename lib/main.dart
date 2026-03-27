@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD81F19)),
       ),
-      home: const CheckoutScreen(),
+      home: const LoginScreen(),
     );
   }
 }
