@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'orders_page.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -21,16 +23,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFFF0000);
-    const lightPink = Color(0xFFFFD6D6); // Header background
-    const inputBorderColor = Color(0xFFF0F0F0); // Very light grey
+    const primaryColor = Color(0xFFFF0000); // Đỏ
+    const lightPink = Color(0xFFFFD6D6); // Nền tiêu đề
+    const inputBorderColor = Color(0xFFF0F0F0); // Xám rất nhạt
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top Illustration
+            // Hình minh họa phía trên
             Stack(
               children: [
                 ClipPath(
@@ -39,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 260,
                     width: double.infinity,
                     color: lightPink,
-                    // We don't have the exact asset, so we simulate it with an icon
                     child: Padding(
                       padding: const EdgeInsets.only(top: 60.0),
                       child: Icon(
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                // Left pink abstract shape
+                // Hình tròn hồng góc trái
                 Positioned(
                   top: -30,
                   left: -30,
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 16),
 
-            // Light pink drag handle
+            // Thanh kéo màu hồng nhạt
             Center(
               child: Container(
                 width: 50,
@@ -82,24 +83,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 32),
 
-            // "Create Account" and "Login" Tabs
+            // Tab "Tạo tài khoản" và "Đăng nhập"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
                   Column(
                     children: [
                       const Text(
-                        'Login',
+                        'Tạo tài khoản',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -108,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       Container(
-                        width: 30,
+                        width: 90,
                         height: 3,
                         decoration: BoxDecoration(
                           color: primaryColor,
@@ -117,21 +110,70 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    },
+                    child: const Text(
+                      'Đăng nhập',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 48),
+            const SizedBox(height: 32),
 
-            // Form Fields
+            // Các trường nhập liệu
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Email address label
+                  // Nhãn họ và tên
                   const Text(
-                    'Email address',
+                    'Họ và tên',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Segun Phillips',
+                      hintStyle: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: inputBorderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: primaryColor),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Nhãn địa chỉ email
+                  const Text(
+                    'Địa chỉ email',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -160,11 +202,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
-                  // Password label
+                  // Nhãn mật khẩu
                   const Text(
-                    'Password',
+                    'Mật khẩu',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -195,39 +237,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
 
-                  // Forget Password?
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        foregroundColor: primaryColor,
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: const Text(
-                        'Forget Password?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Login Button
+                  // Nút Đăng ký
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const OrdersPage()),
-                      );
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
@@ -238,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                     ),
                     child: const Text(
-                      'Login',
+                      'Đăng ký',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -248,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Small divider below login
+                  // Đường kẻ phân cách nhỏ
                   Center(
                     child: Container(
                       height: 1.5,
@@ -259,22 +273,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Login with Google Button
+                  // Nút Đăng ký bằng Google
                   ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const OrdersPage()),
-                      );
-                    },
+                    onPressed: () {},
                     icon: Image.network(
                       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/120px-Google_%22G%22_logo.svg.png',
                       height: 24,
                       errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
+                      const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
                     ),
                     label: const Text(
-                      'Login with Google',
+                      'Đăng ký bằng Google',
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: 15,
@@ -307,7 +316,7 @@ class HeaderClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0, size.height - 50);
-    // Draw an elliptical arc to the other side
+    // Vẽ cung cong ellipse sang phía bên kia
     path.quadraticBezierTo(
       size.width / 2, size.height + 50,
       size.width, size.height - 50,
