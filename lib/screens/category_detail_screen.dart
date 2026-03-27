@@ -217,7 +217,13 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   Widget _buildItemCard(Map<String, dynamic> item, Color primaryColor) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const ProductDetailScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(
+          id: item['id'],
+          name: item['name'],
+          description: item['description'],
+          price: item['price'],
+          imageUrl: item['imageUrl'],
+        )));
       },
       child: Container(
         width: 190,

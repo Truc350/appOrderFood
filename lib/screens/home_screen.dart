@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'product_detail_screen.dart';
 import 'orders_page.dart';
 import 'cart_screen.dart';
@@ -10,44 +12,41 @@ import 'category_screen.dart';
 import 'MessageScreen.dart';
 import 'NotificationScreen.dart';
 
-void main() {
-  runApp(const NguyenFoodApp());
-}
-
-class NguyenFoodApp extends StatelessWidget {
-  const NguyenFoodApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NguyenFood',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE53935)),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
 // ──────────────────────────────────────────────
 // DATA MODELS
 // ──────────────────────────────────────────────
 
 class FoodItem {
+  final String id;
   final String name;
   final String description;
-  final String price;
+  final int price;
   final String imageUrl;
+  final String category;
 
   const FoodItem({
+    required this.id,
     required this.name,
     required this.description,
     required this.price,
     required this.imageUrl,
+    required this.category,
   });
+
+  factory FoodItem.fromJson(Map<String, dynamic> json) {
+    return FoodItem(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      price: json['price'],
+      imageUrl: json['imageUrl'],
+      category: json['category'],
+    );
+  }
+
+  String get formattedPrice {
+    return '${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} đ';
+  }
 }
 
 // ──────────────────────────────────────────────
@@ -68,24 +67,53 @@ class _HomePageState extends State<HomePage> {
   int _currentBanner = 0;
   Timer? _bannerTimer;
 
-  final List<String> _bannerImages = const [
-    'https://images.unsplash.com/photo-1555126634-323283e090fa?w=800&h=300&fit=crop', // Phở
-    'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&h=300&fit=crop', // Bún bò
-    'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800&h=300&fit=crop', // Cơm tấm
-    'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=800&h=300&fit=crop', // Hủ tiếu
-  ];
+  List<String> _bannerImages = [];
+  List<FoodItem> suggestedItems = [];
+  List<FoodItem> popularItems = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _bannerTimer = Timer.periodic(const Duration(seconds: 2), (_) {
-      final next = (_currentBanner + 1) % _bannerImages.length;
-      _bannerController.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    });
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final homeString = await rootBundle.loadString('assets/home_api.json');
+      final productsString = await rootBundle.loadString('assets/products.json');
+      
+      final homeData = jsonDecode(homeString);
+      final productsData = jsonDecode(productsString) as List;
+
+      final allProducts = productsData.map((json) => FoodItem.fromJson(json)).toList();
+
+      final List<dynamic> banners = homeData['banners'];
+      final List<dynamic> suggestedIds = homeData['suggestedProductIds'];
+      final List<dynamic> popularIds = homeData['popularProductIds'];
+
+      if (!mounted) return;
+
+      setState(() {
+        _bannerImages = banners.cast<String>();
+        suggestedItems = allProducts.where((p) => suggestedIds.contains(p.id)).toList();
+        popularItems = allProducts.where((p) => popularIds.contains(p.id)).toList();
+        isLoading = false;
+      });
+
+      _bannerTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+        if (_bannerImages.isEmpty || !_bannerController.hasClients) return;
+        final next = (_currentBanner + 1) % _bannerImages.length;
+        _bannerController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      });
+    } catch (e) {
+      debugPrint('Error loading JSON data: $e');
+      if (mounted) setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -95,87 +123,46 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-
-  final List<FoodItem> suggestedItems = const [
-    FoodItem(
-      name: 'Cơm tấm sườn bì',
-      description: 'Sườn nướng + bì + chả + cơm tấm',
-      price: '55.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=300&h=200&fit=crop',
-    ),
-    FoodItem(
-      name: 'Phở bò tái',
-      description: 'Bò tái + gân + bánh phở + rau thơm',
-      price: '65.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=300&h=200&fit=crop',
-    ),
-    FoodItem(
-      name: 'Bún bò Huế',
-      description: 'Bò + giò heo + mắm ruốc + rau sống',
-      price: '60.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=300&h=200&fit=crop',
-    ),
-  ];
-
-  final List<FoodItem> popularItems = const [
-    FoodItem(
-      name: 'Hủ tiếu Nam Vang',
-      description: 'Tôm + thịt + gan + hủ tiếu dai',
-      price: '70.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=100&h=100&fit=crop',
-    ),
-    FoodItem(
-      name: 'Bún riêu cua',
-      description: 'Cua đồng + cà chua + đậu hũ + bún',
-      price: '60.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=100&h=100&fit=crop',
-    ),
-    FoodItem(
-      name: 'Cơm tấm sườn bì chả',
-      description: 'Cơm tấm + sườn + bì + chả trứng + dưa chua',
-      price: '50.000 VND',
-      imageUrl: 'https://images.unsplash.com/photo-1516100882582-96c3a05fe590?w=100&h=100&fit=crop',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            // ── Top App Bar ──
-            _buildAppBar(),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator(color: Color(0xFFE53935)))
+            : Column(
+                children: [
+                  // ── Top App Bar ──
+                  _buildAppBar(),
 
-            // ── Scrollable Content ──
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 12),
-                    _buildSearchBar(),
-                    const SizedBox(height: 16),
-                    _buildHeroBanner(),
-                    const SizedBox(height: 20),
-                    _buildCategories(),
-                    const SizedBox(height: 20),
-                    _buildSectionTitle('Gợi ý món ăn'),
-                    const SizedBox(height: 12),
-                    _buildSuggestedItems(),
-                    const SizedBox(height: 20),
-                    _buildSectionTitle('Món ăn phổ biến'),
-                    const SizedBox(height: 12),
-                    _buildPopularItems(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  // ── Scrollable Content ──
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 12),
+                          _buildSearchBar(),
+                          const SizedBox(height: 16),
+                          _buildHeroBanner(),
+                          const SizedBox(height: 20),
+                          _buildCategories(),
+                          const SizedBox(height: 20),
+                          _buildSectionTitle('Gợi ý món ăn'),
+                          const SizedBox(height: 12),
+                          _buildSuggestedItems(),
+                          const SizedBox(height: 20),
+                          _buildSectionTitle('Món ăn phổ biến'),
+                          const SizedBox(height: 12),
+                          _buildPopularItems(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
       bottomNavigationBar: _buildBottomNavBar(),
     );
@@ -292,59 +279,58 @@ class _HomePageState extends State<HomePage> {
 
   // Banner
   Widget _buildHeroBanner() {
+    if (_bannerImages.isEmpty) return const SizedBox.shrink();
     return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: SizedBox(
-            height: 170,
-            child: PageView.builder(
-              controller: _bannerController,
-              onPageChanged: (index) =>
-                  setState(() => _currentBanner = index),
-              itemCount: _bannerImages.length,
-              itemBuilder: (context, index) {
-                return Image.network(
-                  _bannerImages[index],
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: const Color(0xFFE53935),
-                    child: const Center(
-                      child: Icon(Icons.fastfood, size: 60, color: Colors.white),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              height: 170,
+              child: PageView.builder(
+                controller: _bannerController,
+                onPageChanged: (index) =>
+                    setState(() => _currentBanner = index),
+                itemCount: _bannerImages.length,
+                itemBuilder: (context, index) {
+                  return Image.network(
+                    _bannerImages[index],
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: const Color(0xFFE53935),
+                      child: const Center(
+                        child: Icon(Icons.fastfood, size: 60, color: Colors.white),
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
-        ),
-
-
-        Positioned(
-          bottom: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_bannerImages.length, (index) {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: _currentBanner == index ? 20 : 7,
-                height: 7,
-                decoration: BoxDecoration(
-                  color: _currentBanner == index
-                      ? Colors.white
-                      : Colors.white54,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              );
-            }),
+          Positioned(
+            bottom: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(_bannerImages.length, (index) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _currentBanner == index ? 20 : 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    color: _currentBanner == index
+                        ? Colors.white
+                        : Colors.white54,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            ),
           ),
-        ),
-      ],
-    ),
+        ],
+      ),
     );
   }
 
@@ -403,6 +389,7 @@ class _HomePageState extends State<HomePage> {
 
   // ── Section Title ──
   Widget _buildSectionTitle(String title) {
+    if (suggestedItems.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
@@ -418,6 +405,7 @@ class _HomePageState extends State<HomePage> {
 
   // ── Suggested Items (Horizontal Scroll) ──
   Widget _buildSuggestedItems() {
+    if (suggestedItems.isEmpty) return const SizedBox.shrink();
     return SizedBox(
       height: 210,
       child: ListView.separated(
@@ -435,6 +423,7 @@ class _HomePageState extends State<HomePage> {
 
   // ── Popular Items (Vertical List) ──
   Widget _buildPopularItems() {
+    if (popularItems.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -520,7 +509,13 @@ class _SuggestedItemCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const ProductDetailScreen()),
+          MaterialPageRoute(builder: (_) => ProductDetailScreen(
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            imageUrl: item.imageUrl,
+          )),
         );
       },
       child: Container(
@@ -582,7 +577,7 @@ class _SuggestedItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      item.price,
+                      item.formattedPrice,
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -631,7 +626,13 @@ class _PopularItemCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const ProductDetailScreen()),
+          MaterialPageRoute(builder: (_) => ProductDetailScreen(
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            imageUrl: item.imageUrl,
+          )),
         );
       },
       child: Container(
@@ -693,7 +694,7 @@ class _PopularItemCard extends StatelessWidget {
           const SizedBox(width: 8),
           // Price
           Text(
-            item.price,
+            item.formattedPrice,
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
