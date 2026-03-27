@@ -8,6 +8,8 @@ import 'cart_screen.dart';
 import 'order_tracking_page.dart';
 import 'home_screen.dart';
 import 'category_screen.dart';
+import 'MessageScreen.dart';
+import 'NotificationScreen.dart';
 
 // ─── Color Tokens ────────────────────────────────────────────────────────────
 
@@ -316,7 +318,11 @@ class _OrdersPageState extends State<OrdersPage> {
         currentIndex: _selectedNavIndex,
         onTap: (index) {
           if (index == 0) {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+          } else if (index == 2) {
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+          } else if (index == 3) {
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
           } else {
             setState(() => _selectedNavIndex = index);
           }

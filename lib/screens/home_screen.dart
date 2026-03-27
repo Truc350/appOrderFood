@@ -7,6 +7,8 @@ import 'profile_screen.dart';
 import 'search_screen.dart';
 import 'category_detail_screen.dart';
 import 'category_screen.dart';
+import 'MessageScreen.dart';
+import 'NotificationScreen.dart';
 
 void main() {
   runApp(const NguyenFoodApp());
@@ -459,10 +461,14 @@ class _HomePageState extends State<HomePage> {
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          if (index == 1) {
+          if (index == 0) {
+            setState(() => _selectedIndex = 0);
+          } else if (index == 1) {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
-          } else {
-            setState(() => _selectedIndex = index);
+          } else if (index == 2) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+          } else if (index == 3) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
           }
         },
         type: BottomNavigationBarType.fixed,

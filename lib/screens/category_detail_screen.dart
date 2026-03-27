@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'home_screen.dart';
 import 'orders_page.dart';
 import 'product_detail_screen.dart';
+import 'MessageScreen.dart';
+import 'NotificationScreen.dart';
 
 class CategoryDetailScreen extends StatefulWidget {
   final String categoryId;
@@ -99,7 +101,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: primaryColor))
           : _categoryData == null
-              ? const Center(child: Text('Không tìm thấy dữ liệu danh mục này.', style: TextStyle(color: Colors.black54)))
+          ? const Center(child: Text('Không tìm thấy dữ liệu danh mục này.', style: TextStyle(color: Colors.black54)))
               : CustomScrollView(
                   slivers: [
                     // Filter Section
@@ -326,6 +328,10 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
           } else if (index == 1) {
              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+          } else if (index == 2) {
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+          } else if (index == 3) {
+             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
           }
         },
         type: BottomNavigationBarType.fixed,
