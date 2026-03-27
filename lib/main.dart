@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/checkout_screen.dart';
+import 'screens/category_detail_screen.dart';
 void main() {
   runApp(const MyApp());
 }

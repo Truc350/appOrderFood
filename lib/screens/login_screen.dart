@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'home_screen.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -127,24 +128,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 32),
 
-            // "Create Account" and "Login" Tabs
+            // "Đăng nhập" and "Tạo tài khoản" Tabs
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
                   Column(
                     children: [
                       const Text(
-                        'Login',
+                        'Đăng nhập',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -153,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       Container(
-                        width: 30,
+                        width: 90,
                         height: 3,
                         decoration: BoxDecoration(
                           color: primaryColor,
@@ -161,6 +154,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => const SignupScreen(),
+                          transitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Tạo tài khoản',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -176,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   // Email address label
                   const Text(
-                    'Email address',
+                    'Địa chỉ email',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -209,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Password label
                   const Text(
-                    'Password',
+                    'Mật khẩu',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -254,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: const Text(
-                        'Forget Password?',
+                        'Quên mật khẩu?',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -278,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                     ),
                     child: const Text(
-                      'Login',
+                      'Đăng nhập',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -314,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const Icon(Icons.g_mobiledata, size: 32, color: Colors.blue),
                     ),
                     label: const Text(
-                      'Login with Google',
+                      'Đăng nhập bằng Google',
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: 15,

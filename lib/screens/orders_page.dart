@@ -7,6 +7,7 @@ import 'profile_screen.dart';
 import 'cart_screen.dart';
 import 'order_tracking_page.dart';
 import 'home_screen.dart';
+import 'category_screen.dart';
 
 // ─── Color Tokens ────────────────────────────────────────────────────────────
 
@@ -249,7 +250,9 @@ class _OrdersPageState extends State<OrdersPage> {
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.menu, size: 26, color: Colors.black87),
-        onPressed: () {},
+        onPressed: () {
+          showCategoryDrawer(context);
+        },
       ),
       title: const Text(
         'NguyenFood',

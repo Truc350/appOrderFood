@@ -5,6 +5,8 @@ import 'orders_page.dart';
 import 'cart_screen.dart';
 import 'profile_screen.dart';
 import 'search_screen.dart';
+import 'category_detail_screen.dart';
+import 'category_screen.dart';
 
 void main() {
   runApp(const NguyenFoodApp());
@@ -156,6 +158,8 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 16),
                     _buildHeroBanner(),
                     const SizedBox(height: 20),
+                    _buildCategories(),
+                    const SizedBox(height: 20),
                     _buildSectionTitle('Gợi ý món ăn'),
                     const SizedBox(height: 12),
                     _buildSuggestedItems(),
@@ -181,7 +185,15 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          const Icon(Icons.menu, size: 26, color: Colors.black87),
+          IconButton(
+            icon: const Icon(Icons.menu, size: 26, color: Colors.black87),
+            onPressed: () {
+              showCategoryDrawer(context);
+            },
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+          const SizedBox(width: 8),
           const Expanded(
             child: Center(
               child: Text(
@@ -331,6 +343,59 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     ),
+    );
+  }
+
+  // ── Categories ──
+  Widget _buildCategories() {
+    final categories = [
+      {'id': 'com', 'name': 'Cơm', 'icon': Icons.rice_bowl},
+      {'id': 'pho', 'name': 'Phở', 'icon': Icons.ramen_dining},
+      {'id': 'hutieu', 'name': 'Hủ tiếu', 'icon': Icons.local_dining},
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: categories.map((cat) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CategoryDetailScreen(
+                    categoryId: cat['id'] as String,
+                    categoryName: cat['name'] as String,
+                  ),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE53935).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(cat['icon'] as IconData, color: const Color(0xFFE53935), size: 28),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  cat['name'] as String,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
