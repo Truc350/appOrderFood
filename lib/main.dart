@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/product_detail_screen.dart';
+import 'screens/checkout_screen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD81F19)),
       ),
-      home: const ProductDetailScreen(),
+      home: const CheckoutScreen(),
     );
   }
 }
