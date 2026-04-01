@@ -56,11 +56,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   String get orderSummary {
-    List<String> parts = ['$mainQuantity ${widget.name.toLowerCase()}'];
+    List<String> parts = [];
     selectedAddons.forEach((name, selected) {
       if (selected) {
         final qty = addonQuantities[name] ?? 1;
-        parts.add('$qty ${name.toLowerCase()}');
+        final price = addonPrices[name] ?? 0;
+        parts.add('$qty ${name.toLowerCase()} (${price * qty ~/ 1000}.000đ)');
       }
     });
     return parts.join(' + ');
