@@ -44,8 +44,6 @@ class AppColors {
   static const inverseSurface = Color(0xFF240307);
 }
 
-// ─── Data Models ─────────────────────────────────────────────────────────────
-
 enum OrderStatus { pending, waitingPickup, delivering, delivered, cancelled }
 
 class OrderItem {
