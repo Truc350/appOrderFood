@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
-import 'screens/product_detail_screen.dart';
-import 'screens/checkout_screen.dart';
-import 'screens/category_detail_screen.dart';
-void main() {
+import 'screens/home_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -19,52 +19,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD81F19)),
       ),
-      home: const LoginScreen(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      // Thêm FutureBuilder để check session
+      // Nếu đã login trước đó → vào thẳng HomePage
+      // Nếu chưa → về LoginScreen như cũ
+      home: FutureBuilder<bool>(
+        future: AuthService.instance.init(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: CircularProgressIndicator(color: Color(0xFFD81F19)),
+              ),
+            );
+          }
+          if (snapshot.data == true) {
+            return const HomePage();
+          }
+          return const LoginScreen();
+        },
       ),
     );
   }
