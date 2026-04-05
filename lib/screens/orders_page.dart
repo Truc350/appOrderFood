@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/order_manager.dart';
 import 'order_detail_page.dart';
 import 'order_tracking_page.dart';
 import 'home_screen.dart';
@@ -12,9 +13,6 @@ import 'home_screen.dart';
 import 'category_screen.dart';
 import 'MessageScreen.dart';
 import 'NotificationScreen.dart';
-
-// ─── Color Tokens ────────────────────────────────────────────────────────────
-
 class AppColors {
   static const primary = Color(0xFFBB0100);
   static const onPrimary = Color(0xFFFFEFED);
@@ -75,8 +73,6 @@ class Order {
     this.cancelReason,
   });
 }
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
 
 final List<Order> mockOrders = [
   Order(
@@ -151,7 +147,6 @@ final List<Order> mockOrders = [
   ),
 ];
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
@@ -161,7 +156,7 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
-  int _selectedStatusIndex = 2; // Default to 'Đang giao'
+  int _selectedStatusIndex = 0; // Default to 'Đang giao'
   int _selectedNavIndex = 1;
 
   final List<String> _statusLabels = [
@@ -228,6 +223,8 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   List<Order> get filteredOrders {
+    final allOrders = [...OrderManager.instance.orders, ..._allOrders];
+
     OrderStatus targetStatus;
     switch (_selectedStatusIndex) {
       case 0: targetStatus = OrderStatus.pending; break;
@@ -237,7 +234,7 @@ class _OrdersPageState extends State<OrdersPage> {
       case 4: targetStatus = OrderStatus.cancelled; break;
       default: targetStatus = OrderStatus.pending;
     }
-    return _allOrders.where((o) => o.status == targetStatus).toList();
+    return allOrders.where((o) => o.status == targetStatus).toList();
   }
 
   @override
@@ -619,7 +616,7 @@ class _ActiveOrderCardState extends State<ActiveOrderCard> {
                           Text(
                             _isExpanded 
                                 ? 'Thu gọn' 
-                                : 'Xem thêm \$hiddenCount món khác',
+                                : 'Xem thêm $hiddenCount món khác',
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -678,7 +675,7 @@ class _ActiveOrderCardState extends State<ActiveOrderCard> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const OrderTrackingPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => OrderTrackingPage(order: widget.order)));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -919,7 +916,7 @@ class CancelledOrderCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Lý do: \${order.cancelReason}',
+                  'Lý do: ${order.cancelReason}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.onSurfaceVariant,
@@ -989,7 +986,7 @@ class _OrderItemRow extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '\${item.quantity}x \${item.name}',
+                    '${item.quantity}x ${item.name}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
