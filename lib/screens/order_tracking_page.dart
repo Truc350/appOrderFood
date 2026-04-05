@@ -3,12 +3,12 @@ import 'orders_page.dart';
 import 'order_detail_page.dart';
 
 class OrderTrackingPage extends StatefulWidget {
-  const OrderTrackingPage({super.key});
+  final Order order;
+  const OrderTrackingPage({super.key, required this.order}); // ← THÊM
 
   @override
   State<OrderTrackingPage> createState() => _OrderTrackingPageState();
 }
-
 class _OrderTrackingPageState extends State<OrderTrackingPage> {
   int _selectedNavIndex = 1;
 
@@ -317,6 +317,9 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
   }
 
   Widget _buildOrderSummary(BuildContext context) {
+    final order = widget.order; 
+    final firstItem = order.items.first; 
+
     return Column(
       children: [
         Row(
@@ -325,7 +328,6 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
             Text(
               'Tóm tắt đơn hàng',
               style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: AppColors.onSurface.withOpacity(0.8),
@@ -347,45 +349,49 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        Container(
+        const SizedBox(height: 12),
+        ...order.items.map((item) => Container(
+          margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border:
-                Border.all(color: AppColors.outlineVariant.withOpacity(0.2)),
+            border: Border.all(color: AppColors.outlineVariant.withOpacity(0.2)),
           ),
           child: Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuCirbzNNPrwlKbcAfVd8xlfENUP8eJSDMmMRx5iCDXW48HKl-HY7qvBWO5DWw1cp4v0rLI-S-MtF-L2CeTbJVCuN9tkI8Ei947ol6MjwV215gCN8eU9QvewgT42N7V6cly9Sp8JGKmQJD0_IVmTY826E0MoUjws9AKfoqlggnrE3oTRGZVGAB31nLtNW4aW2aPr8nU9sZXdio8b20wwIGbpUQYKJ85LEIUVxAL_eTP88tURHZdI_Ve0dC1jUROE23bW-47eAGzAO_4',
+                  item.imageUrl,
                   width: 64,
                   height: 64,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) =>
-                      Container(color: AppColors.surfaceContainer),
+                      Container(
+                        width: 64,
+                        height: 64,
+                        color: AppColors.surfaceContainer,
+                        child: const Icon(Icons.fastfood, color: AppColors.onSurfaceVariant),
+                      ),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      'Burger Bò Wagyu Truffle',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
+                      item.name,
+                      style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         color: AppColors.onSurface,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '1x Đơn hàng • Extra Cheese',
-                      style: TextStyle(
+                      '${item.quantity}x món',
+                      style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.onSurfaceVariant,
                       ),
@@ -393,12 +399,38 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
                   ],
                 ),
               ),
-              const Text(
-                '245.000đ',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
+              Text(
+                _formatCurrency(item.price * item.quantity),
+                style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+        )).toList(),
+
+        // Tổng cộng
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'TỔNG CỘNG',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+              Text(
+                _formatCurrency(order.totalPrice),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.onSurface,
                 ),
               ),
             ],
@@ -487,5 +519,13 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
         ),
       ),
     );
+  }
+
+  String _formatCurrency(int amount) {
+    final formatted = amount.toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]}.',
+    );
+    return '${formatted}đ';
   }
 }

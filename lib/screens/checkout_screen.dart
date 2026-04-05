@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/order_manager.dart';
 import 'orders_page.dart';
 import '../models/cart_manager.dart';
+
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -12,8 +14,12 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String selectedPayment = 'Tiền mặt';
 
-  List<CartItem> get orderItems => CartManager.instance.items.where((i) => i.isChecked).toList();
-
+  List<CartItem> get orderItems {
+    final checked = CartManager.instance.items
+        .where((i) => i.isChecked)
+        .toList();
+    return checked.isNotEmpty ? checked : CartManager.instance.items;
+  }
   int get subtotal => CartManager.instance.selectedTotalPrice;
   int get shippingFee => 15000;
   int get discount => 0;
@@ -305,7 +311,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: GestureDetector(
                     onTap: () {
                       if (orderItems.isEmpty) return;
+
+                      final newOrder = Order(
+                        id: 'ORD${DateTime.now().millisecondsSinceEpoch}',
+                        status: OrderStatus.pending,
+                        items: orderItems.map((item) => OrderItem(
+                          name: item.name,
+                          quantity: item.quantity,
+                          price: item.price,
+                          imageUrl: item.imageUrl,
+                        )).toList(),
+                        totalPrice: total,
+                      );
+
+                      OrderManager.instance.addOrder(newOrder);
                       CartManager.instance.removeSelected();
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Đặt hàng thành công!')),
                       );
