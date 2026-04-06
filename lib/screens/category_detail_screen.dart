@@ -102,39 +102,39 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
           ? const Center(child: CircularProgressIndicator(color: primaryColor))
           : _categoryData == null
           ? const Center(child: Text('Không tìm thấy dữ liệu danh mục này.', style: TextStyle(color: Colors.black54)))
-              : CustomScrollView(
-                  slivers: [
-                    // Filter Section
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                        child: Row(
-                          children: [
-                            const Text(
-                              'Lọc: ',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            _buildFilterChip('Giá thấp đến cao', 'asc', primaryColor),
-                            const SizedBox(width: 8),
-                            _buildFilterChip('Giá cao đến thấp', 'desc', primaryColor),
-                          ],
-                        ),
-                      ),
+          : CustomScrollView(
+        slivers: [
+          // Filter Section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Lọc: ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
-                    // Subcategories
-                    ...(_categoryData!['subcategories'] as List).map((sub) {
-                      return SliverToBoxAdapter(
-                        child: _buildSubcategorySection(sub, primaryColor),
-                      );
-                    }).toList(),
-                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 12),
+                  _buildFilterChip('Giá thấp đến cao', 'asc', primaryColor),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Giá cao đến thấp', 'desc', primaryColor),
+                ],
+              ),
+            ),
+          ),
+          // Subcategories
+          ...(_categoryData!['subcategories'] as List).map((sub) {
+            return SliverToBoxAdapter(
+              child: _buildSubcategorySection(sub, primaryColor),
+            );
+          }).toList(),
+          const SliverToBoxAdapter(child: SizedBox(height: 32)),
+        ],
+      ),
       bottomNavigationBar: _buildBottomNav(),
     );
   }
@@ -331,13 +331,13 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
           } else if (index == 1) {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const OrdersPage()));
           } else if (index == 2) {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
           } else if (index == 3) {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MessageScreen()));
           }
         },
         type: BottomNavigationBarType.fixed,
