@@ -16,7 +16,7 @@ class NotificationScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(context),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -73,13 +73,18 @@ class NotificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       child: Row(
         children: [
-          const Icon(Icons.arrow_back, color: Colors.red),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+            },
+            child: const Icon(Icons.arrow_back, color: Colors.red),
+          ),
           const Spacer(),
           const Text(
             "Thông báo",
