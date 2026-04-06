@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+import '../widgets/search_dropdown.dart';
 import 'home_screen.dart';
 import 'product_detail_screen.dart';
 import 'orders_page.dart';
@@ -6,52 +9,60 @@ import 'MessageScreen.dart';
 import 'NotificationScreen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final String? initialQuery;
+  const SearchScreen({super.key, this.initialQuery});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _searchController = TextEditingController();
   int _selectedFilterIndex = 0;
   final List<String> _filters = ['Tất cả', 'Gần đây', 'Phổ biến', 'Giá rẻ', 'Đánh giá cao'];
   int _bottomNavIndex = 0;
 
-  final List<Map<String, dynamic>> _suggestedItems = [
-    {
-      'name': 'Cơm tấm sườn bì',
-      'restaurant': 'Quán Cơm Tấm Đêm',
-      'price': 45000,
-      'rating': 4.8,
-      'reviews': 120,
-      'image': 'https://i-giadinh.vnecdn.net/2024/03/07/7Honthinthnhphm1-1709800144-8583-1709800424.jpg',
-    },
-    {
-      'name': 'Phở bò tái nạm',
-      'restaurant': 'Phở Hà Nội',
-      'price': 50000,
-      'rating': 4.5,
-      'reviews': 85,
-      'image': 'https://phothinhanoi.vn//storage/photos/pho/Ph____b___t__i.jpg',
-    },
-    {
-      'name': 'Hủ tiếu Nam Vang',
-      'restaurant': 'Hủ Tiếu Nam Vang',
-      'price': 40000,
-      'rating': 4.6,
-      'reviews': 210,
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFVV1POzVrY4BDwScGgZvJAnD6UA9DfK2M9Q&s',
-    },
-    {
-      'name': 'Mì cay đủ loại 7 cấp',
-      'restaurant': 'Mì Cay Sasin',
-      'price': 55000,
-      'rating': 4.9,
-      'reviews': 350,
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQChzgpsU4JrYzBEqMF81tiZc27J3buc2kJog&s',
-    },
-  ];
+  List<Map<String, dynamic>> _allItems = [];
+  List<Map<String, dynamic>> _filteredItems = [];
+  bool _isLoading = true;
+  String _currentQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialQuery != null) {
+      _currentQuery = widget.initialQuery!;
+    }
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      final String response = await rootBundle.loadString('assets/products.json');
+      final List<dynamic> data = json.decode(response);
+      setState(() {
+        _allItems = data.cast<Map<String, dynamic>>();
+        _filterProducts(_currentQuery);
+        _isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Error loading products: $e");
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _filterProducts(String query) {
+    _currentQuery = query;
+    if (query.trim().isEmpty) {
+      _filteredItems = List.from(_allItems);
+    } else {
+      final lowercaseQuery = query.toLowerCase();
+      _filteredItems = _allItems.where((item) {
+        final name = (item['name'] as String).toLowerCase();
+        return name.contains(lowercaseQuery);
+      }).toList();
+    }
+    setState(() {});
+  }
 
   String _formatPrice(int price) {
     return '${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} đ';
@@ -119,42 +130,12 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildTopSearchBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
-      child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Bạn muốn ăn gì hôm nay?',
-                  hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, color: Colors.grey, size: 20),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {});
-                          },
-                        )
-                      : const Icon(Icons.mic_none, color: Colors.grey, size: 22),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
-            ),
+      child: SearchDropdown(
+        initialQuery: _currentQuery,
+        onSearch: (query) {
+           _filterProducts(query);
+        },
+      ),
     );
   }
 
@@ -203,13 +184,19 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchResults() {
+    if (_isLoading) {
+       return const Center(child: CircularProgressIndicator());
+    }
+    if (_filteredItems.isEmpty) {
+       return const Center(child: Text('Không tìm thấy kết quả phù hợp', style: TextStyle(color: Colors.grey)));
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _searchController.text.isEmpty ? 'Gợi ý cho bạn' : 'Kết quả tìm kiếm',
+            _currentQuery.isEmpty ? 'Gợi ý cho bạn' : 'Kết quả tìm kiếm',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -219,9 +206,9 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(height: 15),
           Expanded(
             child: ListView.builder(
-              itemCount: _suggestedItems.length,
+              itemCount: _filteredItems.length,
               itemBuilder: (context, index) {
-                final item = _suggestedItems[index];
+                final item = _filteredItems[index];
                 return _buildResultItem(item);
               },
             ),
@@ -252,7 +239,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: Image.network(
-              item['image'],
+              item['imageUrl'] ?? '',
               width: 80,
               height: 80,
               fit: BoxFit.cover,
@@ -286,7 +273,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     const Icon(Icons.star, color: Colors.amber, size: 16),
                     const SizedBox(width: 4),
                     Text(
-                      '${item['rating']} (${item['reviews']})',
+                      '${item['rating'] ?? 4.8} (${item['reviews'] ?? 120})',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey[600],
@@ -296,7 +283,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        item['restaurant'],
+                        item['restaurant'] ?? 'Quán NguyenFood',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey[500],

@@ -11,6 +11,7 @@ import 'category_detail_screen.dart';
 import 'category_screen.dart';
 import 'MessageScreen.dart';
 import 'NotificationScreen.dart';
+import '../widgets/search_dropdown.dart';
 
 // ──────────────────────────────────────────────
 // DATA MODELS
@@ -233,47 +234,9 @@ class _HomePageState extends State<HomePage> {
 
   // ── Search Bar ──
   Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: TextField(
-          readOnly: true,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
-          },
-          decoration: InputDecoration(
-            hintText: 'Tìm kiếm món ăn mà bạn thích...',
-            hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-            prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[200]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[200]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE53935)),
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 12),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-        ),
-      ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: SearchDropdown(),
     );
   }
 
