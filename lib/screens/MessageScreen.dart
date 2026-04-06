@@ -16,7 +16,7 @@ class MessageScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(context),
             _buildSearchBar(),
             _buildFilterTabs(),
             _buildRecentTitle(),
@@ -27,13 +27,18 @@ class MessageScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       color: Colors.white,
       child: Row(
         children: [
-          const Icon(Icons.arrow_back, size: 24),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePage()));
+            },
+            child: const Icon(Icons.arrow_back, size: 24),
+          ),
           const SizedBox(width: 14),
           const Text(
             "Tin nhắn",
