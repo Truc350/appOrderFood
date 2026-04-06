@@ -252,11 +252,11 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget _buildAccountSettings() {
     return Column(
       children: [
-        SwitchListTile(
-          title: const Text("Xác minh công dân Mỹ"),
-          value: isUSCitizen,
-          onChanged: (v) => setState(() => isUSCitizen = v),
-        ),
+        // SwitchListTile(
+        //   title: const Text("Xác minh công dân Mỹ"),
+        //   value: isUSCitizen,
+        //   onChanged: (v) => setState(() => isUSCitizen = v),
+        // ),
         SwitchListTile(
           title: const Text("Nhận thông báo Marketing"),
           value: receiveMarketing,

@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
       'price': 45000,
       'rating': 4.8,
       'reviews': 120,
-      'image': 'assets/images/cart/com_tam.png',
+      'image': 'https://i-giadinh.vnecdn.net/2024/03/07/7Honthinthnhphm1-1709800144-8583-1709800424.jpg',
     },
     {
       'name': 'Phở bò tái nạm',
@@ -33,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
       'price': 50000,
       'rating': 4.5,
       'reviews': 85,
-      'image': 'assets/images/cart/pho.png',
+      'image': 'https://phothinhanoi.vn//storage/photos/pho/Ph____b___t__i.jpg',
     },
     {
       'name': 'Hủ tiếu Nam Vang',
@@ -41,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
       'price': 40000,
       'rating': 4.6,
       'reviews': 210,
-      'image': 'assets/images/cart/hu_tieu.png',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFVV1POzVrY4BDwScGgZvJAnD6UA9DfK2M9Q&s',
     },
     {
       'name': 'Mì cay đủ loại 7 cấp',
@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
       'price': 55000,
       'rating': 4.9,
       'reviews': 350,
-      'image': 'assets/images/cart/mi_cay.png',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQChzgpsU4JrYzBEqMF81tiZc27J3buc2kJog&s',
     },
   ];
 
@@ -251,7 +251,7 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
+            child: Image.network(
               item['image'],
               width: 80,
               height: 80,

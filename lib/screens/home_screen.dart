@@ -610,11 +610,6 @@ class _SuggestedItemCard extends StatelessWidget {
     ));
   }
 }
-
-// ──────────────────────────────────────────────
-// POPULAR ITEM CARD
-// ──────────────────────────────────────────────
-
 class _PopularItemCard extends StatelessWidget {
   final FoodItem item;
 
@@ -668,7 +663,6 @@ class _PopularItemCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          // Text info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
